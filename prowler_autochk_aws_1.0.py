@@ -2,7 +2,7 @@ import boto3
 import subprocess
 import os
 
-# AWS 계정 ID 목록
+# AWS Account list
 accounts = [
     "111111111111",
     "222222222222",
@@ -23,12 +23,10 @@ def assume_role(account_id, role_name):
     return response['Credentials']
 
 def run_prowler(credentials, account_id):
-    # 임시 자격 증명을 환경 변수로 설정
     os.environ['AWS_ACCESS_KEY_ID'] = credentials['AccessKeyId']
     os.environ['AWS_SECRET_ACCESS_KEY'] = credentials['SecretAccessKey']
     os.environ['AWS_SESSION_TOKEN'] = credentials['SessionToken']
 
-    # Prowler 실행
     #command = f"prowler aws"
     #result = subprocess.run(command, text=True)
     result = subprocess.run(['prowler', 'aws', '-M', 'json-ocsf', 'html', '--compliance', 'cis_3.0_aws', '--severity', 'critical', 'high'], text=True)
